@@ -53,4 +53,9 @@ def train_model(x_train, autoencoder):
     return autoencoder
 
 def save_model(autoencoder):
-    autoencoder.save(MODEL_FL_PATH)
+    file_path = MODEL_FL_PATH.format(int(round(time.time() * 1000)))
+    autoencoder.save(file_path)
+    
+    return file_path
+    
+    

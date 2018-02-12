@@ -4,10 +4,10 @@ def get_sorted_similarity_idx(encoder, img_to_find, encoded_images, loss):
     
 
     #initializing vars to pass into tensorflow
-    encoded_images = encoder.predict(img_to_find)
-    encoded_images = encoded_images.reshape(encoded_images.shape[0], -1)
+    encoded_image_selected = encoder.predict(img_to_find)
+    encoded_image_selected = encoded_image_selected.reshape(encoded_image_selected.shape[0], -1)
 
-    X_selected = encoded_images.tolist()
+    X_selected = encoded_image_selected[0]
     X_all = encoded_images.tolist()
 
     X_selected_tf = tf.Variable(X_selected, tf.float32)

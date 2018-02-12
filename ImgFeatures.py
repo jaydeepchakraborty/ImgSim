@@ -7,9 +7,12 @@ def save_img_feature(encoder, dataset):
     encoded_images = encoder.predict(dataset)
     encoded_images = encoded_images.reshape(encoded_images.shape[0], -1)
     
-    np.savetxt(SAVE_FEATURE_PATH, encoded_images)
+    feature_path = SAVE_FEATURE_PATH.format(int(round(time.time() * 1000)))
+    np.savetxt(feature_path, encoded_images)
     
-def load_img_features():
-    return np.loadtxt(SAVE_FEATURE_PATH)
+    return feature_path
+    
+def load_img_features(feature_path):
+    return np.loadtxt(feature_path)
         
     

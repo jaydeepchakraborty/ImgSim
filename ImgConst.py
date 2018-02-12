@@ -37,6 +37,6 @@ OPT_1 = "adadelta"
 PAD = "same"
 
 ENC_NM = "encoder"
-MODEL_FL_PATH = '/Users/jaydeep/jaydeep_workstation/ASU/Spring2018/MC_535/data/autoencoder_{}.h5'.format(int(round(time.time() * 1000)))
+MODEL_FL_PATH = '/Users/jaydeep/jaydeep_workstation/ASU/Spring2018/MC_535/data/autoencoder_{}.h5'
 
-SAVE_FEATURE_PATH = '/Users/jaydeep/jaydeep_workstation/ASU/Spring2018/MC_535/data/img_featurer_{}.txt'.format(int(round(time.time() * 1000)))
+SAVE_FEATURE_PATH = '/Users/jaydeep/jaydeep_workstation/ASU/Spring2018/MC_535/data/img_featurer_{}.txt'

@@ -9,13 +9,13 @@ try:
     x_train = prepare_data()
     autoencoder = get_model()
     autoencoder = train_model(x_train,autoencoder)
-    save_model(autoencoder) 
-    autoencoder_save = load_model(MODEL_FL_PATH)
-    save_img_feature(autoencoder_save, x_train)
-    feature_val = load_img_features()
+    model_path = save_model(autoencoder) 
+    autoencoder_save = load_model(model_path)
+    feature_path = save_img_feature(autoencoder_save, x_train)
+    feature_val = load_img_features(feature_path)
 
 
-    img_test_file = "f0002_05.png"
+    img_test_file = "f0006_09.png"
     img_test = img_vec(img_test_file)
     img_test = img_test.astype('float32') / 255.
     img_test = np.reshape(img_test, (len(img_test),IMG_WIDTH, IMG_HEIGHT, IMG_COLOR))
@@ -23,7 +23,7 @@ try:
     similar_idx = similarity_sorted[0]
     
     print(similar_idx)
-    print(similarity_sorted)
+#     print(similarity_sorted)
     
 #     f = plt.figure(figsize=(20, 4))
 #     f.add_subplot(1, 2, 1)
