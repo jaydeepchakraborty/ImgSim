@@ -1,43 +1,39 @@
-from LoadData import get_data
-from Model import get_model
-from keras.callbacks import TensorBoard
-import numpy as np
-import math
-import time
+from ImgConst import *
+
+from LoadData import prepare_data, img_vec
+from Model import get_model, train_model, save_model
+from SimImgIdx import get_sorted_similarity_idx
+from ImgFeatures import save_img_feature, load_img_features
+
+try:
+    x_train = prepare_data()
+    autoencoder = get_model()
+    autoencoder = train_model(x_train,autoencoder)
+    save_model(autoencoder) 
+    autoencoder_save = load_model(MODEL_FL_PATH)
+    save_img_feature(autoencoder_save, x_train)
+    feature_val = load_img_features()
 
 
-(x_train, x_test) = get_data()
-
-noise_factor = 0.5
-x_train_noisy = x_train + noise_factor * np.random.normal(loc=0.0, scale=1.0, size=x_train.shape)
-x_test_noisy = x_test + noise_factor * np.random.normal(loc=0.0, scale=1.0, size=x_test.shape)
-
-x_train_noisy = np.clip(x_train_noisy, 0., 1.)
-x_test_noisy = np.clip(x_test_noisy, 0., 1.)
-
-
-
-EPOCHS = 20
-BATCH_SIZE = 64
-TRNG_BATCH_SIZE = 1000
-num_trng_batch_per_epoch = math.ceil(x_train.shape[0]/TRNG_BATCH_SIZE)
-
-
-autoencoder = get_model()
-
-for epoch in range(EPOCHS):
-    print('epoch: {}'.format(epoch))
-    for batchnum in range(num_trng_batch_per_epoch):
-        x_train_batch = x_train[batchnum*TRNG_BATCH_SIZE : (batchnum+1)*TRNG_BATCH_SIZE]
-        x_train_noisy_batch = x_train_noisy[batchnum*TRNG_BATCH_SIZE : (batchnum+1)*TRNG_BATCH_SIZE]
-
-        autoencoder.fit(x_train_noisy, x_train,
-                            epochs=EPOCHS,
-                            batch_size=BATCH_SIZE,
-                            shuffle=True,
-                            validation_data=(x_test_noisy, x_test),
-                            callbacks=[TensorBoard(log_dir='/tmp/tb', histogram_freq=0, write_graph=False)])
-
-autoencoder.save('autoencoder_{}.h5'.format(int(round(time.time() * 1000))))
+    img_test_file = "f0002_05.png"
+    img_test = img_vec(img_test_file)
+    img_test = img_test.astype('float32') / 255.
+    img_test = np.reshape(img_test, (len(img_test),IMG_WIDTH, IMG_HEIGHT, IMG_COLOR))
+    similarity_sorted = get_sorted_similarity_idx(autoencoder_save, img_test, encoded_images=feature_val, loss=LOSS_2)
+    similar_idx = similarity_sorted[0]
+    
+    print(similar_idx)
+    print(similarity_sorted)
+    
+#     f = plt.figure(figsize=(20, 4))
+#     f.add_subplot(1, 2, 1)
+#     plt.imshow(x_train[1].reshape(28, 28))
+#     f.add_subplot(1,2, 2)
+#     plt.imshow(x_train[similar_idx].reshape(28, 28))
+#     plt.show(block=True)
+    
+    
+except Exception as e:
+    print(e)
 
 

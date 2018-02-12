@@ -1,14 +1,13 @@
-import matplotlib.pyplot as plt
-import tensorflow as tf
-from keras.losses import binary_crossentropy, cosine_proximity
-import numpy as np
+from ImgConst import *
 
-def get_sorted_similarity_idx(encoder, img_to_find_idx, dataset, loss='binary_crossentropy'):
-    encoded_images = encoder.predict(dataset)
-    encoded_images = encoded_images.reshape(encoded_images.shape[0], -1)
+def get_sorted_similarity_idx(encoder, img_to_find, encoded_images, loss):
+    
 
     #initializing vars to pass into tensorflow
-    X_selected = [encoded_images[img_to_find_idx].tolist() for _ in range(encoded_images.shape[0])]
+    encoded_images = encoder.predict(img_to_find)
+    encoded_images = encoded_images.reshape(encoded_images.shape[0], -1)
+
+    X_selected = encoded_images.tolist()
     X_all = encoded_images.tolist()
 
     X_selected_tf = tf.Variable(X_selected, tf.float32)
@@ -26,6 +25,6 @@ def get_sorted_similarity_idx(encoder, img_to_find_idx, dataset, loss='binary_cr
     with tf.Session() as sess:
         sess.run(init_op)
         similarity = sess.run(loss_tf)
-    similarity_sorted = np.argsort(np.array(similarity))[1:] #the same figure appears in X_all too, so remove it
+    similarity_sorted = np.argsort(np.array(similarity)) #the same figure appears in X_all too, so remove it
     
     return similarity_sorted
